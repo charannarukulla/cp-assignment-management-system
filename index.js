@@ -11,10 +11,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //app.use(express.static(path.resolve(__dirname, '')));
 var fs = require('fs');
 var dir = '/tmp';
-
-if (!fs.existsSync(dir)){
-    fs.mkdirSync(dir);
-}
+ 
 //const handler = (req, res) => res.send(path.join(__dirname, "./public/index.ejs"))
 app.set('view engine','ejs')
 //const routes = ["/", "/authuser"]
