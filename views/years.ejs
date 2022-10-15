@@ -11,6 +11,8 @@
   <head>
     <meta charset="utf-8" />
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous";>
+    </script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
     
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
@@ -159,12 +161,12 @@
 
           <% if(locals.rres){for(var i=0;i<rres.length;i++){ %>
           <tr>
-            <td><%= rres[i]["year"] %></td>
+             <td><%= rres[i]["year"] %></td>
             
-            <td><%= rres[i]["dept"] %></td>
+            <td><%= rres[i]["dpcount"]-1 %></td>
             <td>
-              <form action="dept" method="post"> <input type="hidden" name="year"  value=" <%= rres[i]["year"] %> "  />
-              <button type="submit" class="btn btn-success">Add/view Departments</button><br></form>
+              
+              <button type="submit" class="btn btn-success adddeptjs" onclick='myFunction("<%=rres[i]["year"]%>" )'>Add/view Departments</button><br> 
               <form action="delyear" method="post"> <input type="hidden" name="year"  value=" <%= rres[i]["year"] %> "  />
               <button type="submit" class="btn btn-danger">Delete year</button></form>
             </td>
@@ -176,6 +178,37 @@
     </div>
   </div>
  </div>
+<!--ADD department-->
+<div class="modal fade" id="adddept" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCenterTitle">Add department for <%=cyear%></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">   <form action="adddeptcall" method="post">
+        <div class="row">
+       
+          <div class="col mb-3">
+            <label for="nameWithTitle" class="form-label">Enter Department Name </label>
+            <input type="hidden" name="year" value="<%=locals.curyear%>"/>
+            <input type="text" id="dept" name="dept" class="form-control" placeholder="Example Computer Science And Engineering" >
+          </div>
+        </div>
+         
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div></form>
+    </div>
+  </div>
+</div>
+
+
+ <!--Add Year-->
  <div class="modal fade" id="addyear" tabindex="-1" style="display: none;" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -240,7 +273,8 @@
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
-    <script src="../assets/vendor/libs/jquery/jquery.js"></script>
+   
+
     <script src="../assets/vendor/libs/popper/popper.js"></script>
     <script src="../assets/vendor/js/bootstrap.js"></script>
     <script src="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
@@ -258,12 +292,26 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
-  <script>
 
+  <script>
+    function myFunction(  year) {
+      
+<% var cyear="this.year"%>
+$("#adddept").modal('show');
+    }
+    </script>
+  <script>
+      
 if((<%=locals.fallback%>)==0)
     swal("Invalid year","Please check year is unique.","error");
     else if(<%=locals.fallback%>==1)
     swal("Year added","Year has been added.","success");
+$(document).ready(function(){
+  
+$("#adddept").click(function(){
+  alert("Clicled")
+});
 
+});
   </script>
 </html>

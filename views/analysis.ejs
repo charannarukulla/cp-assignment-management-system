@@ -15,7 +15,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title> Home</title>
+    <title>Admin Home</title>
 
     <meta name="description" content="" />
 
@@ -38,8 +38,28 @@
     <link rel="stylesheet" href="../assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="../assets/css/demo.css" />
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <!-- Page CSS -->
 
@@ -76,15 +96,25 @@
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
             </li>
-           
             <li class="menu-item">
-              <a href="viewstuassignments" class="menu-link">
-                <i class='bx bx-show'></i>
-                <div data-i18n="Analytics">View assignments</div>
+              <a href="newassignment" class="menu-link">
+                <i class='bx bx-code-alt'></i>
+                <div data-i18n="Analytics">New assignment</div>
               </a>
             </li>
-           
-             
+            
+            <li class="menu-item">
+              <a href="reports" class="menu-link">
+                <i class='bx bxs-report'></i>
+                <div data-i18n="Analytics">Reports and analysis</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="years" class="menu-link">
+                <i class='bx bx-edit-alt'></i>
+                <div data-i18n="Analytics">Manage</div>
+              </a>
+            </li>
             <li class="menu-item">
               <a href="myacc" class="menu-link">
                 <i class='bx bxs-user-account'></i>
@@ -112,70 +142,30 @@
           <!-- Content wrapper -->
           <div class="content-wrapper">
             <!-- Content -->
-    
- <div class="row" style="margin-top: 15px;margin-left:2px;">
 
-    <div class="card">
-      <h5 class="card-header">My Assignments</h5>
-      <div class="table-responsive text-nowrap">
-        <table class="table">
-          <thead>
-            <tr>
-            
-              <th>Code</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody class="table-border-bottom-0">
-  
-            <% if(locals.a){for(var i=0;i<a.length;i++){
-              if(b[i]==1)b[i]="Solved";
-              else
-              b[i]="Not solved";
-              var curcode=a[i] %>
-            <tr>
-              <td><%= curcode%></td>
-              
-              <td>
-                
-                
-                <%= b[i] %></td>
-             
-              <td>
-                <%if(b[i]=="Not solved"){
-                  var url="https://www.codechef.com/problems/"+curcode;
-                  %>
-              
-              <a href="<%=url%>" target="_blank"><button  class="btn btn-danger" >Solve now</button> </a>
-                <%  }  else{ 
-                  
-                  var url="/codes/"+curcode+"/"+email.split("@")[0]+".txt";
-                  %>
-                <a href="<%=url%>" target="_blank">  <button   class="btn btn-info">View my code</button></a><%}%>
+            <div class="row" style="margin:50px;">
+<div class="col-6">
+  <div class="card">
+    <div class="row row-bordered g-0">
+      <div class="col-md-8">
 
-              </td>
-            </tr>
-          <%}}%>  
-          <tr>
-            <td>Total</td>
-            <td><%=locals.total%></td>
-            <td>
-              <form action="/updatescore" method="post">
-                <input type="hidden" name="total"  value=" <%=total%> "  />
-                
-                <input type="hidden" name="email"  value=" <%=email%> "  /><input type="hidden" name="id"  value=" <%=id%> "  />
-                <button type="submit" class="btn btn-success">Update score</button><br></form>
-            </td>
-          </tr>
-             
-          </tbody>
-        </table> 
-      </div>
+        <h5 class="card-header m-0 me-2 pb-3">Passout year wise participation</h5>
+        
+       
+          
+  </div>
+  <div class="card-body">
+  <div class="row row-bordered g-0">
+    <div class="col" style="margin:5px;">
+      <canvas id="year" style="width:100%;max-width:600px"></canvas>
     </div>
-   </div>
+  </div>
+  
+  </div>
+</div>
 
-     <form method="POST" action="leaderboard" ><input type="hidden" name="id" value="<%=id%>"/> <button  type="submit" class="btn btn-primary">View leaderboard</button></form> 
+    </div>
+         
             </div>
             <!-- / Content -->
 
@@ -226,6 +216,29 @@
     <script src="../assets/js/main.js"></script>
 
     <!-- Page JS -->
+    <script>
+      var xValues = [<%=(arryear.a)%>];
+      var yValues = [ <%=arrdata%>];
+      var barColors = ["red", "green","blue","orange"];
+      
+      new Chart("year", {
+        type: "bar",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+          }]
+        },
+        options: {
+          legend: {display: false},
+          title: {
+            display: true,
+            text: "Passout year wise invitations"
+          }
+        }
+      });
+      </script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>

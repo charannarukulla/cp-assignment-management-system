@@ -116,67 +116,47 @@
  <div class="row" style="margin-top: 15px;margin-left:2px;">
 
     <div class="card">
-      <h5 class="card-header">My Assignments</h5>
+      <h5 class="card-header">leaderboard</h5>
       <div class="table-responsive text-nowrap">
         <table class="table">
           <thead>
             <tr>
             
-              <th>Code</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Roll number</th>
+              <th>Score</th>
             </tr>
           </thead>
           <tbody class="table-border-bottom-0">
   
             <% if(locals.a){for(var i=0;i<a.length;i++){
-              if(b[i]==1)b[i]="Solved";
-              else
-              b[i]="Not solved";
-              var curcode=a[i] %>
+             %>
             <tr>
-              <td><%= curcode%></td>
+              <td><%= i+1%></td>
+              
               
               <td>
                 
                 
-                <%= b[i] %></td>
-             
+                <%= a[i].fullname %></td>
               <td>
-                <%if(b[i]=="Not solved"){
-                  var url="https://www.codechef.com/problems/"+curcode;
-                  %>
+                 
               
-              <a href="<%=url%>" target="_blank"><button  class="btn btn-danger" >Solve now</button> </a>
-                <%  }  else{ 
-                  
-                  var url="/codes/"+curcode+"/"+email.split("@")[0]+".txt";
-                  %>
-                <a href="<%=url%>" target="_blank">  <button   class="btn btn-info">View my code</button></a><%}%>
-
+               <%=a[i].rollnumber%>
               </td>
+        <td> <%=a[i].score%></td>
+               
             </tr>
           <%}}%>  
-          <tr>
-            <td>Total</td>
-            <td><%=locals.total%></td>
-            <td>
-              <form action="/updatescore" method="post">
-                <input type="hidden" name="total"  value=" <%=total%> "  />
-                
-                <input type="hidden" name="email"  value=" <%=email%> "  /><input type="hidden" name="id"  value=" <%=id%> "  />
-                <button type="submit" class="btn btn-success">Update score</button><br></form>
-            </td>
-          </tr>
-             
+          
           </tbody>
         </table> 
       </div>
     </div>
    </div>
 
-     <form method="POST" action="leaderboard" ><input type="hidden" name="id" value="<%=id%>"/> <button  type="submit" class="btn btn-primary">View leaderboard</button></form> 
-            </div>
+       </div>
             <!-- / Content -->
 
             <!-- Footer -->

@@ -15,13 +15,21 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title> Home</title>
+    <title>Admin Home</title>
 
     <meta name="description" content="" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
-
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+   <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+   <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+   <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+    <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet"/>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,6 +37,8 @@
       href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
     <!-- Icons. Uncomment required icon fonts -->
     <link rel="stylesheet" href="../assets/vendor/fonts/boxicons.css" />
@@ -76,15 +86,25 @@
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
             </li>
-           
             <li class="menu-item">
-              <a href="viewstuassignments" class="menu-link">
-                <i class='bx bx-show'></i>
-                <div data-i18n="Analytics">View assignments</div>
+              <a href="newassignment" class="menu-link">
+                <i class='bx bx-code-alt'></i>
+                <div data-i18n="Analytics">New assignment</div>
               </a>
             </li>
-           
-             
+
+            <li class="menu-item">
+              <a href="reports" class="menu-link">
+                <i class='bx bxs-report'></i>
+                <div data-i18n="Analytics">Reports and analysis</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="years" class="menu-link">
+                <i class='bx bx-edit-alt'></i>
+                <div data-i18n="Analytics">Manage</div>
+              </a>
+            </li>
             <li class="menu-item">
               <a href="myacc" class="menu-link">
                 <i class='bx bxs-user-account'></i>
@@ -113,69 +133,30 @@
           <div class="content-wrapper">
             <!-- Content -->
     
- <div class="row" style="margin-top: 15px;margin-left:2px;">
+<div class="card">
+                <div class="card-header">All assignments</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        
+                        <table id="allassign" class="table table-bordered cell-border	hover order-column	row-border	" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Start Date Time</th>
+                                    <th>Number of participants</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        
+                    </div>
+                </div>
+            </div>
+        
 
-    <div class="card">
-      <h5 class="card-header">My Assignments</h5>
-      <div class="table-responsive text-nowrap">
-        <table class="table">
-          <thead>
-            <tr>
-            
-              <th>Code</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody class="table-border-bottom-0">
-  
-            <% if(locals.a){for(var i=0;i<a.length;i++){
-              if(b[i]==1)b[i]="Solved";
-              else
-              b[i]="Not solved";
-              var curcode=a[i] %>
-            <tr>
-              <td><%= curcode%></td>
-              
-              <td>
-                
-                
-                <%= b[i] %></td>
-             
-              <td>
-                <%if(b[i]=="Not solved"){
-                  var url="https://www.codechef.com/problems/"+curcode;
-                  %>
-              
-              <a href="<%=url%>" target="_blank"><button  class="btn btn-danger" >Solve now</button> </a>
-                <%  }  else{ 
-                  
-                  var url="/codes/"+curcode+"/"+email.split("@")[0]+".txt";
-                  %>
-                <a href="<%=url%>" target="_blank">  <button   class="btn btn-info">View my code</button></a><%}%>
 
-              </td>
-            </tr>
-          <%}}%>  
-          <tr>
-            <td>Total</td>
-            <td><%=locals.total%></td>
-            <td>
-              <form action="/updatescore" method="post">
-                <input type="hidden" name="total"  value=" <%=total%> "  />
-                
-                <input type="hidden" name="email"  value=" <%=email%> "  /><input type="hidden" name="id"  value=" <%=id%> "  />
-                <button type="submit" class="btn btn-success">Update score</button><br></form>
-            </td>
-          </tr>
-             
-          </tbody>
-        </table> 
-      </div>
-    </div>
-   </div>
-
-     <form method="POST" action="leaderboard" ><input type="hidden" name="id" value="<%=id%>"/> <button  type="submit" class="btn btn-primary">View leaderboard</button></form> 
+         
             </div>
             <!-- / Content -->
 
@@ -212,7 +193,7 @@
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
-    <script src="../assets/vendor/libs/jquery/jquery.js"></script>
+     
     <script src="../assets/vendor/libs/popper/popper.js"></script>
     <script src="../assets/vendor/js/bootstrap.js"></script>
     <script src="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
@@ -230,4 +211,86 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.11/sorting/date-eu.js"></script>
+  <script>
+
+    $(document).ready(function(){
+     $('#allassign').DataTable({
+         
+        paging: true,
+        "autoWidth": false,
+        "ordering": true,
+"processing":true,
+"searching":true,
+
+"ajax": {
+    "url": "/get_assign",
+    "method":"POST",
+    "dataSrc": function ( json ) {
+      for ( var i=0, ien=json.length ; i<ien ; i++ ) {
+        json[i][0] = '<a href="/message/'+json[i][0]+'>View message</a>';
+      }
+      return json;
+    }
+  },
+ 
+  dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    ,
+    paging:true,dom: 'Blfrtip', responsive: true,
+    buttons: [
+
+        {
+            extend: 'pdfHtml5',
+         className:"btn btn-primary",
+          
+                filename:"All assignments"
+             ,title:"All Assignments"
+        },
+        {
+            extend:'csvHtml5',  className:"btn btn-primary",
+            filename:"All assignments"
+             ,title:"All Assignments"
+        },
+        {
+            extend:'excelHtml5',  className:"btn btn-primary",
+            filename:"All assignments"
+             ,title:"All Assignments"
+        },
+        {
+            extend:'print',
+            filename:"All assignments"
+             ,title:"All Assignments"
+        }
+    ],
+  "order": [ 1, 'desc' ],
+        "columns":[
+            {
+                "data":"id"
+            },
+            {
+                "data":"dt",
+                render: function(data, type, row){
+                if(type === "sort" || type === "type"){
+                    return data;
+                }
+                return moment(data).format("MM-DD-YYYY hh:mm A");}
+               
+            },
+            {
+                "data":"total_students"
+            },
+            {
+                "data":"action",
+                render:(data)=>{return '<form action="/viewreport" method="post">                <input type="hidden" name="id"  value="'+data+'"  />       <input type="submit"  class="btn btn-info" value="View report">   </form>&nbsp;  <form action="/viewanalysis" method="post">                <input type="hidden" name="id"  value="'+data+'"  />       <button type="submit"  class="btn btn-secondary">View analysis</button></form> '}
+            }
+        ]
+       
+   
+     });
+    })
+    </script>
 </html>

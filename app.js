@@ -49,15 +49,15 @@ var text=await page.evaluate(element=>element.textContent,element)
 console.log(text)
 }
 browser.close()
-}
+} 
 //test()
 app.get('/years',async(req,res) =>{
-await con. query("select * from years",(err,rres)=>{
-
+await con. query("select   year,count(year)as dpcount from years group by year",(err,rres)=>{
+	var curyear="null";
 	console.log(rres)
-	res.render('years',{rres})
+	res.render('years',{rres,curyear})
 })
-
+ 
 
 })
 const mysql = require('mysql')
@@ -73,7 +73,7 @@ con.connect(function(err) {
 	console.log("Connected!");
   });
  
-
+  
 app.post('/addyearcall',urlencodedParser,async(a,b)=>{
 
 console.log(a.body["year"]);
@@ -126,7 +126,7 @@ if(email!=null&&password!=null){
 			 res.redirect('admindashboard')
 			 else
 			 {
-			con.query("select * from studentinfo where email=?",[email],(err,d)=>{
+		con.query("select * from studentinfo where email=?",[email],(err,d)=>{
 				console.log(d[0])
 				res.cookie("chef",d[0].codechefusername);
 				res.redirect('dashboard')
@@ -136,8 +136,9 @@ if(email!=null&&password!=null){
 			}
 	 }
 	 else{
-req.session.emailid=email;
-		res.render('userregister',{emailid:req.session.emailid});
+/*req.session.emailid=email;
+		res.render('userregister',{emailid:req.session.emailid});*/
+		res.send("<h1>Looks like you are not registered</h1><a href='../'><h2>Click here to go back to home.login using college email to register</h2></a>")
 
 	 }
 
@@ -196,11 +197,11 @@ if(found==1)
 			 else
 			{
 				con.query("select * from studentinfo where email=?",[email],(err,d)=>{
-					res.cookie("chef",d[0].codechefusername);
+					bass.cookie("chef",d[0].codechefusername);
 					bass.redirect('dashboard')
 				})
 				
-		}
+		} 
 
 			}
 			 if(found==0){
@@ -213,7 +214,7 @@ bass.render('userregister',{emailid:a.session.emailid});
 next();
 			 }
 
-			bass.end()
+		
 		})
 		 
 	}
@@ -264,7 +265,7 @@ var start=[];
 var end=[];
 var j=0;
 //	console.log(req.session );
-await con.query("select assinfo.* from assignments inner join assinfo on assinfo.id=assignments.id where assignments.email=?",[req.cookies.emailid],async(err,result)=>{
+await con.query("select assinfo.* from assignments inner join assinfo on assinfo.id=assignments.id where assignments.email=? order by start desc",[req.cookies.emailid],async(err,result)=>{
 	console.log(result);
 	ids=result;
 
@@ -418,7 +419,7 @@ con.query("select * from a"+id+" where email=?",[req.cookies.emailid],(err,score
 	for(var k=0;k<scores.length-2;k++)
 	curscores=scores[0].codes[k]
 	console.log("curscores "+curscores)
-	res.render("viewassignment",{email:req.cookies.emailid,id:id,a:codes,b:curscores,total:scores1[0]['total']}); })
+	res.render("viewassignment",{email:req.cookies.emailid,id:id,a:codes,b:curscores,total:scores[0]['total']}); })
 
 	})
  }
@@ -482,8 +483,9 @@ async function updatedb(cccode,total,email,id){
 	return new Promise(async (resolve)=>{
 		await con.query("update a"+id+" set "+cccode+" =1,total="+total+" where email=?",[email],async(err,resp)=>{
 			console.log("ERR "+cccode); 
+			await con.query("update assignments set score ="+total+" where email=? and id=?",[email,id],async(err,resp)=>{
 			resolve({reply:true})
-			
+			})
 			
 			  })
 	})
@@ -563,4 +565,71 @@ async function webrun(codes,i,email,id,chef,total){
 		}
 	})
 }
+app.post("/get_assign",async(request,response,next)=>{
+ 
 
+ 
+ con.query("select id,dt,count(id) as total_students,id as action from assignments group by id order by dt DESC",async(err,data)=>{
+
+	response.json(data);
+ })
+
+
+
+})
+
+
+app.get("/reports",(req,res)=>{
+if(req.cookies.role=="admin"){
+
+ res.render("allassignments");
+}
+else{
+	res.send(401,"<h1>Unauthorized access</h1>");
+}
+
+
+})
+app.post("/get_reportdata",urlencodedParser,(req,res)=>{
+	console.log(req)
+	con.query("select * from assignments,studentinfo where assignments.email=studentinfo.email and assignments.id=?",[req.body.id.trim()],(err,data)=>{
+		console.log(data)
+		 
+res.json(data)
+	
+	})
+
+})
+app.post("/delyear",urlencodedParser,(req,res)=>{
+  con.query("delete from years where year=?",[req.body.year.trim()],(err,result)=>{
+ if(!err){
+	res.redirect("/years")
+ }
+
+  })
+})
+app.post("/viewreport",urlencodedParser,(req,res)=>{
+var id=req.body.id.trim();
+con.query("select codes from assinfo where id=?",[id],(err,result)=>{
+	var codes=result[0].codes.split(",");
+	console.log(codes)
+	res.render("report",{totalcodes:codes.length,id:id})
+ 
+})
+
+})
+
+app.post("/leaderboard",urlencodedParser,(req,res)=>{
+	var id=req.body.id.trim();
+	con.query("select * from assignments inner join studentinfo on studentinfo.email=assignments.email and id=? order by score desc",[id],(err,result)=>{
+
+	res.render("leaderboard",{a:result});
+	})
+})
+app.post("/viewanalysis",urlencodedParser,(req,res)=>{
+var id=req.body.id.trim();
+var yearsarr={a:["2025","2024","2023","2022"]};
+ 
+res.render("analysis",{id,arryear:yearsarr,arrdata:["10","20","30","40"]})
+
+})

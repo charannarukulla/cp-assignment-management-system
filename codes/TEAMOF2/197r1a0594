@@ -1,0 +1,65 @@
+/* package codechef; // don't place package name! */
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+/* Name of the class has to be "Main" only if the class is public. */
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		// your code goes here
+		
+		Scanner sc=new Scanner(System.in);
+		int t=sc.nextInt();
+		while(t-->0){
+		    int n=sc.nextInt();
+		    List<List<Integer>> im=new ArrayList<>();
+		    int ms=0,midx;
+		    while(n-->0){
+		        List<Integer> ll=new ArrayList<>();
+		        int tps=sc.nextInt();
+		        while(tps-->0)
+		        ll.add(sc.nextInt());
+		        im.add(ll);
+		        if(ll.size()>ms){
+		            //im.add(ll);
+		            ms=ll.size();
+		            midx=im.size()-1;
+		        }
+		        
+		        
+		    }
+		    boolean ans=false;
+		 //   System.out.println(im);
+		    if(ms==5)ans=true;
+		    else{
+		        int dr=5-ms;
+		        for(int i=0;i<im.size();i++){
+		            int sr=5-im.get(i).size();
+		         //   System.out.println("sr"+sr);
+		            List<Integer> tmpa=im.get(i);
+		            for(int j=i+1;j<im.size();j++){
+		               // if(im.get(j).size()+sr<5)break;
+		                List<Integer> tmpb=im.get(j);
+		                for(int ii=0;ii<tmpb.size();ii++){
+		                  //   System.out.println("sc"+tmpb);
+		                    if(!tmpa.contains(tmpb.get(ii)))
+		                    sr--;
+		                    if(sr==0){ans=true;break;}
+		                }
+		                sr=5-tmpa.size();
+		                if(ans)break;
+		            }
+		            if(ans)break;
+		        }
+		    }
+		    if(ans)System.out.println("YES");
+		    else
+		    System.out.println("NO");
+		    
+		    
+		}
+	}
+}
