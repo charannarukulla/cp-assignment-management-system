@@ -16,6 +16,8 @@ var dir = '/tmp';
 app.set('view engine','ejs')
 //const routes = ["/", "/authuser"]
 var sis;
+app.set('views', path.join(__dirname, 'views'));
+
 
 //routes.forEach( route => app.get(route, handler) )
 app.use( bodyParser.json() );       
