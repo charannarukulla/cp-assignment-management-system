@@ -394,7 +394,7 @@ b.render('newassignment',{created:true,aid:Date.now()})
 })
  
 
-app.listen(process.env.PORT|4000);
+app.listen(process.env.PORT||4000);
 
 
 
