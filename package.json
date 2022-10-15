@@ -17,6 +17,7 @@
   "version": "1.0.0",
   "description": "CP Assignment System",
   "main": "index.js",
+  
   "devDependencies": {},
   "scripts": {
     "test": "node tests",
