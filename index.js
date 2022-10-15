@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser');
 app.use(express.static(path.join(__dirname, 'public')));
 //app.use(express.static(path.resolve(__dirname, '')));
 var fs = require('fs');
-var dir = './tmp';
+var dir = '/tmp';
 
 if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
@@ -530,7 +530,7 @@ async function webrun(codes,i,email,id,chef,total){
 		{ 	res+=codes[i]+",";
 			var codeid=await page.evaluate(element=>element.textContent,e2)
 			console.log(codeid)
-			var fp="./tmp/"+codes[i];
+			var fp="/tmp/"+codes[i];
 			if (!fs.existsSync(fp)){
 				fs.mkdirSync(fp);
 			}
