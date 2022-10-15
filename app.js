@@ -63,17 +63,17 @@ await con. query("select   year,count(year)as dpcount from years group by year",
 const mysql = require('mysql')
 const con  = mysql.createConnection({
     connectionLimit : 10,
-    host            : 'dpg-cd5aj602i3mphk7emci0-a:5432',
-	
+    host            : 'cpdb1.cjlyu7lpn9hv.ap-south-1.rds.amazonaws.com',
+	port:3306,
     user            : 'root',
-    password        : '8gXPL6j9LQyIyvLvH3ItRoa9FeE4gGgw',
+    password        : 'sDFPjqEsvWnhSqGg3Ch5',
     database        : 'cpdb'
-})
-con.connect(function(err) {
+})  
+con.connect(function(err) { 
 	if (err) throw err;
-	console.log("Connected!");
-  });
- 
+	console.log("Connected!"); 
+  }); 
+  
   
 app.post('/addyearcall',urlencodedParser,async(a,b)=>{
 
