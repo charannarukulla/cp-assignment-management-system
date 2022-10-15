@@ -451,7 +451,7 @@ console.log(id);
     
 })
   app.post("/updatescore",urlencodedParser,async(req,res)=>{
-	res.render('viewstuassignments',{mes:true})
+	
 	var email=req.body.email.trim()
 	var id=req.body.id.trim();
 	var chef=req.cookies.chef.trim()
@@ -465,7 +465,7 @@ await con.query("select * from assinfo where id=?",[id],async(err,data)=>{
 		 for(var j=0;j<solved.length;j++){
 			var cccode=solved[j].trim();
 			updatedb(cccode,solved.length-1,email,id).then((res)=>{
-				
+				res.render('viewstuassignments',{mes:true})
 			})
 			 
 		 }
