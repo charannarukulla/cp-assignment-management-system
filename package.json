@@ -12,5 +12,30 @@
     "pg": "^8.8.0",
     "puppeteer": "^15.5.0",
     "sweetalert": "^2.1.2"
-  }
+  },
+  "name": "cpass",
+  "version": "1.0.0",
+  "description": "CP Assignment System",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "node tests",
+    "start":"nodemon index.js"
+  },
+  "engines": {
+    "node": "14.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charannarukulla/cp-assignment-management-system.git"
+  },
+  "keywords": [
+    "cp"
+  ],
+  "author": "charan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/charannarukulla/cp-assignment-management-system/issues"
+  },
+  "homepage": "https://github.com/charannarukulla/cp-assignment-management-system#readme"
 }
