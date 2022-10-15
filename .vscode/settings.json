@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "dpg-cd5aj602i3mphk7emci0-a",
+            "port": 5432,
+            "driver": "MariaDB",
+            "name": "myc",
+            "database": "cpdb",
+            "username": "root",
+            "password": "8gXPL6j9LQyIyvLvH3ItRoa9FeE4gGgw"
+        }
+    ]
+}
