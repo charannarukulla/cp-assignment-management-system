@@ -487,23 +487,28 @@ console.log("Start score update"+id)
 await con.query("select * from assinfo where id=?",[id],async(err,data)=>{
 	//console.log(id)
 	var codes=data[0]['codes'].split(",");
-	  updatesstatus(codes,email,chef).then(async(response)=>{
+	await  updatesstatus(codes,email,chef).then(async(response)=>{
 		 var solved=response.solved.trim().split(",");
 		 var e=response.e.trim();
 		 console.log("Received database update request to add "+solved +" to "+e);
-		 for(var j=0;j<solved.length;j++){
+		 var y=solved.length
+		 if(solved[solved.length-1]=="")
+y--;
+		 for(var j=0;j<y;j++){
 			var cccode=solved[j].trim();
-			await updatedb(cccode,solved.length,e,id).then((res)=>{
+			
+			await updatedb(cccode,y,e,id).then((res)=>{
 				console.log("Score db updated successfully,OOHOO! "+cccode+" "+e+" "+reply);
 				
 				
 
 			})
 
-			if(j==solved.length-1)
-			work--;	
+		
+		
 			
 		 }
+		 work--;	
 
 	  })
 
@@ -550,12 +555,14 @@ async function updatesstatus( codes,email ,chef){
 			console.log("Web run for "+codes[i]+ " "+chef );
 	result=	await	webrun(codes[i],chef).then(async(res)=>{
 				
-				 
+				 console.log(i+" "+res);
 				if(i==codes.length-1)
 				{console.log("reply ="+res.reply+"i val"+i)
 					if(res.reply!="false")
 					reply+=res.reply
-					resolve({solved:reply,e:email});}
+					
+					resolve({solved:reply,e:email});
+				}
 				else if(res.reply!="false")
 				reply+=res.reply+","
 				return reply
@@ -580,37 +587,22 @@ async function webrun(codes,chef){
 		var url="https://www.codechef.com/status/"+codes+"?sort_by=All&sorting_order=asc&language=All&contest=All&status=FullAC&handle=+"+chef+"%2C+&Submit=GO";
 		
 			console.log(url);
-  await page.setDefaultNavigationTimeout(0)
-
+ 
 		await page.goto(url)
 		try{ 
 			var element=await page.waitForXPath("/html/body/center/center/table/tbody/tr/td/div/div/div/div/div[2]/div/div/div/div/div[3]/table/tbody/tr/td[4]/span")
-		var e2=await page.waitForXPath("/html/body/center/center/table/tbody/tr/td/div/div/div/div/div[2]/div/div/div/div/div[3]/table/tbody/tr/td[1]");
+		//var e2=await page.waitForXPath("/html/body/center/center/table/tbody/tr/td/div/div/div/div/div[2]/div/div/div/div/div[3]/table/tbody/tr/td[1]");
 		
 		var text=await page.evaluate(element=>element.textContent,element)
 		if(text=="(100)")
-		{ /*	res+=codes[i]+",";
-			var codeid=await page.evaluate(element=>element.textContent,e2)
-			console.log(codeid)
-			 
-			
-			var codeurl="https://www.codechef.com/viewplaintext/"+codeid;
-  await page.setDefaultNavigationTimeout(0)
-
-			await page.goto(codeurl)
-			var xp="/html/body/pre";
-			var sourcecode=await page.waitForXPath(xp);
-			
-			var sc=await page.evaluate(element=>element.textContent,sourcecode);
-			/* await fs.writeFile(fp+"/"+email.split("@")[0], sc,async function(err) {
-				if(err) {
-					return console.log(err);
-				}
-				
-			}); */
+		{ 
+			console.log(codes+" browser closed")
 			browser.close()
 			resolve({reply:codes})
 			
+		}
+		else{
+			resolve({reply:"false"})
 		}
 	 
 				
