@@ -36,11 +36,11 @@ try {
       executablePath: await chrome.executablePath,
       headless: true,
       ignoreHTTPSErrors: true,
-    });
+    });  
   } catch (err) {
     console.error(err);
     return null;
-  }}
+  }}  
   pl();
 
 
@@ -481,6 +481,7 @@ console.log(id);
 	var id=req.body.id.trim();
 	var chef=req.cookies.chef.trim()
 	var total=req.body.total.trim()
+	res.render('viewstuassignments',{mes:true})
 console.log("Start score update"+id)
 await con.query("select * from assinfo where id=?",[id],async(err,data)=>{
 	//console.log(id)
@@ -490,7 +491,7 @@ await con.query("select * from assinfo where id=?",[id],async(err,data)=>{
 		 for(var j=0;j<solved.length;j++){
 			var cccode=solved[j].trim();
 			updatedb(cccode,solved.length-1,email,id).then((res)=>{
-				res.render('viewstuassignments',{mes:true})
+				console.log("Score db updated successfully,OOHOO!");
 			})
 			 
 		 }
