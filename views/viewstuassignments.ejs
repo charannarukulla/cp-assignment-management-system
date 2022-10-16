@@ -72,7 +72,7 @@
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
             <li class="menu-item">
-              <a href="admindashboard" class="menu-link">
+              <a href="dashboard" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
@@ -134,8 +134,11 @@
             <tr>
               <td><%= a[i].id %></td>
               
-              <td><%= a[i].start %></td>
-              <td><%= a[i].end%></td>
+              <td><time datetime="2017-02-14"> <%=a[i].start.toLocaleString( "en-IN")
+                %></time>
+
+                </td>
+              <td><%= a[i].end.toLocaleString( "en-IN")%></td>
               <td>
                 <form action="/viewassignment" method="post"> <input type="hidden" name="id"  value=" <%=a[i].id%> "  />
                 <button type="submit" class="btn btn-success">View assignment</button><br></form>

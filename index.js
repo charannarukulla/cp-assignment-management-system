@@ -495,7 +495,7 @@ await con.query("select * from assinfo where id=?",[id],async(err,data)=>{
 async function updatedb(cccode,total,email,id){
 	return new Promise(async (resolve)=>{
 		await con.query("update a"+id+" set "+cccode+" =1,total="+total+" where email=?",[email],async(err,resp)=>{
-			console.log("ERR "+cccode); 
+			console.log("ERR "+cccode+" for user "+email+" "+err); 
 			await con.query("update assignments set score ="+total+" where email=? and id=?",[email,id],async(err,resp)=>{
 			resolve({reply:true})
 			})
@@ -544,10 +544,7 @@ async function webrun(codes,i,email,id,chef,total){
 		{ 	res+=codes[i]+",";
 			var codeid=await page.evaluate(element=>element.textContent,e2)
 			console.log(codeid)
-			var fp="/tmp/"+codes[i];
-			if (!fs.existsSync(fp)){
-				fs.mkdirSync(fp);
-			}
+			 
 			
 			var codeurl="https://www.codechef.com/viewplaintext/"+codeid;
   await page.setDefaultNavigationTimeout(0)
@@ -557,14 +554,15 @@ async function webrun(codes,i,email,id,chef,total){
 			var sourcecode=await page.waitForXPath(xp);
 			
 			var sc=await page.evaluate(element=>element.textContent,sourcecode);
-			 await fs.writeFile(fp+"/"+email.split("@")[0], sc,async function(err) {
+			/* await fs.writeFile(fp+"/"+email.split("@")[0], sc,async function(err) {
 				if(err) {
 					return console.log(err);
 				}
-				browser.close()
+				
+			}); */
+			browser.close()
 			resolve({reply:codes[i]})
 			
-			}); 
 		}
 	 
 				
