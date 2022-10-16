@@ -22,7 +22,6 @@ let puppeteer;
 
  
   puppeteer = require('puppeteer');
-  
  
 
 
@@ -42,7 +41,10 @@ app.get('/', function(request, response) {
  
 async function test(){
 const browser=await puppeteer.launch({});
+
 const page =await browser.newPage();
+await page.setDefaultNavigationTimeout(0)
+
 await page.goto("https://www.codechef.com/START49C?order=desc&sortBy=successful_submissions")
 //awa 
 for(var i=1;i<5;i++)
@@ -530,6 +532,8 @@ async function webrun(codes,i,email,id,chef,total){
 		var url="https://www.codechef.com/status/"+codes[i]+"?sort_by=All&sorting_order=asc&language=All&contest=All&status=FullAC&handle=+"+chef+"%2C+&Submit=GO";
 		
 			console.log(url);
+  await page.setDefaultNavigationTimeout(0)
+
 		await page.goto(url)
 		try{ 
 			var element=await page.waitForXPath("/html/body/center/center/table/tbody/tr/td/div/div/div/div/div[2]/div/div/div/div/div[3]/table/tbody/tr/td[4]/span")
@@ -546,6 +550,8 @@ async function webrun(codes,i,email,id,chef,total){
 			}
 			
 			var codeurl="https://www.codechef.com/viewplaintext/"+codeid;
+  await page.setDefaultNavigationTimeout(0)
+
 			await page.goto(codeurl)
 			var xp="/html/body/pre";
 			var sourcecode=await page.waitForXPath(xp);
