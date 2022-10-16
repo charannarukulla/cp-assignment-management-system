@@ -20,28 +20,10 @@ app.set('views', path.join(__dirname, 'views'));
 let chrome = {};
 let puppeteer;
 
-if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
-  // running on the Vercel platform.
-  chrome = require('chrome-aws-lambda');
-  puppeteer = require('puppeteer-core');
-} else {
-  // running locally.
+ 
   puppeteer = require('puppeteer');
-}
-async function pl(){
-try {
-    let browser = await puppeteer.launch({
-      args: [...chrome.args, '--hide-scrollbars', '--disable-web-security'],
-      defaultViewport: chrome.defaultViewport,
-      executablePath: await chrome.executablePath,
-      headless: true,
-      ignoreHTTPSErrors: true,
-    });  
-  } catch (err) {
-    console.error(err);
-    return null;
-  }}  
-  pl();
+  
+ 
 
 
 //routes.forEach( route => app.get(route, handler) )
