@@ -206,6 +206,7 @@ app.post('/authuser',urlencodedParser,async(a,bass,next)=>{
 		{ 
 			 
 		con.query("select * from login where email=?",[email],(err,data)=>{
+			console.log(err)
 var found=data.length
 console.log(data)
 if(found==1)
@@ -250,22 +251,23 @@ next();
 });
 app.post('/addstudent',urlencodedParser,async(req,res)=>{
 //console.log(req);
-var name=req.body.name;
-var chef=req.body.ccuser;
-var yop=req.body.pyear;
-var pass=req.body.password;
+var name=req.body.name.trim();
+var chef=req.body.ccuser.trim();
+var yop=req.body.pyear.trim();
+var pass=req.body.password.trim();
+res.redirect("./");
 var terms=req.body.terms;
 console.log(req.session.emailid)
 var roll=(req.session.emailid).split('@')[0];
 await con.query("insert into login(email,role,password) values(?,?,?)",[req.session.emailid,"Student",pass],async (err,res)=>{
-await con.query("insert into studentinfo values(?,?,?,?,?,?,?,?) ",[roll,name,req.session.emailid,chef,req.body.branch,req.body.section,pass,"NS"]
+await con.query("insert into studentinfo values(?,?,?,?,?,?,?,?) ",[roll,name,req.session.emailid,chef,req.body.branch,req.body.section,yop,"NS"]
 ,async(err,res)=>{
 
 console.log("User added")
-res.render('dashboard');
+
 
 }
-
+ 
 )
 
 
@@ -273,7 +275,7 @@ res.render('dashboard');
 
 
 
-res.end()
+
 
 })
 app.get('/dashboard',(re,res)=>{
@@ -318,16 +320,16 @@ b.render('index')
 })
  
 async function createassigment(data,dt,id,dte,codes){
-
+	console.log("Entered create assignement fun")
 	for(var i=0;i<data.length;i++){
-		await con.query("insert into assignments values(?,?,?)",[id,data[i].email,dt],async (err,res)=>{
+		await con.query("insert into assignments values(?,?,?,?)",[id,data[i].email,dt,0],async (err,res)=>{
 			//console.log(res)
 			console.log("ERR"+err)
 		})
 	}
 	 await con.query("insert into assinfo values(?,?,?,?)",[id,dt,dte,codes],async(err,res)=>{
         console.log(err);	
-		//console.log(res)
+		//console.log(res) 
 		//var cols=
 		var carr=codes.split(",")
 		var q=""
@@ -339,18 +341,19 @@ async function createassigment(data,dt,id,dte,codes){
 
 }
 app.post('/addtest',urlencodedParser,async (a,b)=>{
-var id=a.body.id;
-var codes=a.body.pscodes
- var start=a.body.startdt
- var end=a.body.enddt
- var passout=a.body.passout
- var department=a.body.department
+var id=a.body.id.trim();
+var codes=a.body.pscodes.trim()
+ var start=a.body.startdt.trim()
+ var end=a.body.enddt.trim()
+ var passout=a.body.passout.trim()
+ var department=a.body.department.trim()
 var t,toadd;
 if(passout!="ALL"){
 	if(department!="ALL"){
 		sql="select email from studentinfo where branch=? and passout=?";
 	await	con.query(sql,[department,passout],(err,res,fi)=>{
               console.log("fields"+fi.keys)
+			  
 console.log(err);
 //console.log(res);
 createassigment(res,start,id,end,codes).then(()=>{
@@ -658,4 +661,68 @@ var yearsarr={a:["2025","2024","2023","2022"]};
  
 res.render("analysis",{id,arryear:yearsarr,arrdata:["10","20","30","40"]})
 
+})
+app.post("/adddept",urlencodedParser,(req,res)=>{
+
+var year=req.body.year.trim();
+
+con.query("Select dept from years where year=?",[year],(err,rres)=>{
+	res.render("adddept",{year,rres});
+})
+
+
+})
+app.post("/adddeptreq",urlencodedParser,(a,b)=>{
+	var year=a.body.year.trim();
+	var dept=a.body.dept.trim();
+con.query("insert into years values(?,?)",[year,dept], async(err,res)=>{
+
+console.log(res);
+if(err) {
+	console.log("cp"+err)
+	await con.query("select * from years where year=?",[year],async(err,rres)=>{
+
+		console.log("cp"+rres)
+	 
+		b.render('adddept',{year,rres,fallback:0})
+		//b.end()
+	}) 
+}
+else{
+	await con.query("select * from years where year=?",[year],async(err,rres)=>{
+
+		console.log("cp"+rres)
+	 
+		b.render('adddept',{year,rres,fallback:1})
+		//b.end()
+	}) 
+
+	//b.render('/years',{fallback:1})
+}
+
+})
+})
+
+app.post("/deldept",urlencodedParser,(req,res)=>{
+var dept=req.body.dept.trim();
+var year=req.body.year.trim();
+console.log(dept+" "+year)
+var q="delete from years where (year=?) and (dept=?)";
+con.query(q,[year,dept],(err,resy)=>{
+	console.log(resy);
+	res.redirect("years");
+})
+
+})
+app.post("/getyears",(req,res)=>{
+	con.query("select distinct(year) from years",(err,data)=>{
+		console.log(data);
+		res.json(JSON.stringify(data));
+	})
+})
+app.post("/getdept",urlencodedParser,(req,res)=>{
+	con.query("select dept from years where year=?",[req.body.year.trim()],(err,data)=>{
+		console.log(data);
+		res.json(JSON.stringify(data));
+	})
 })

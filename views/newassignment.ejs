@@ -186,16 +186,13 @@
                             </div>
                           </div>
                           <div class="mb-3">
-                            <label class="form-label" for="basic-icon-default-phone">Passout year</label>
+                            <label class="form-label" for="basic-icon-default-phone">Year</label>
                             <div class="input-group input-group-merge">
                               <span id="basic-icon-default-phone2" class="input-group-text"
                                 ><i class='bx bxs-graduation'></i></span>
-                                    <select id="largeSelect" name="passout" class="form-select form-select-lg">
+                                    <select id="year" name="passout" class="form-select form-select-lg">
                                        
-                                        <option value="ALL">ALL</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2025">2025</option>
+                                        <option>ALL</option>
                                       </select>
                             </div>
                           </div>
@@ -204,12 +201,8 @@
                             <div class="input-group input-group-merge">
                               <span id="basic-icon-default-phone2" class="input-group-text"
                                 ><i class='bx bxs-graduation'></i></span>
-                                    <select id="largeSelect" name="department" class="form-select form-select-lg">
-                                        
-                                        <option value="ALL">ALL</option>
-                                        <option value="CSE">CSE</option>
-                                        <option value="ECE">ECE</option>
-                                      
+                                    <select id="dept" name="department" class="form-select form-select-lg">
+                                     
                                       </select>
                             </div>
                           </div>
@@ -274,6 +267,86 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
+  <script>
+    $(document).ready(function(){
+      $.ajax({
+            type: "POST",
+            url: "/getyears",
+             
+            
+            success: function(result){
+console.log(result)
+ 
+var $el = $("#year");
+ 
+$.each(JSON.parse(result), function(key,value) {
+  $el.append($("<option></option>")
+     .attr("value", value.year).text(value.year));
+});
+
+}
+    });
+    $.ajax({
+            type: "POST",
+            url: "/getdept",
+             data:{year:"1ST YEAR"},
+            
+            success: function(result){
+console.log(result)
+ 
+var $el = $("#dept");
+$el.empty()
+$el.append($("<option></option>")
+     .attr("value", "ALL").text("ALL"));
+$.each(JSON.parse(result), function(key,value) {
+  if(value.dept!='0'&&value.dept!="")
+ { $el.append($("<option></option>")
+     .attr("value", value.dept).text(value.dept));}
+});
+
+
+}
+    });
+  
+    $("#year").change(function() {
+  if ($(this).data('options') === undefined) {
+     $(this).data('options', $('#dept option').clone());
+  }
+  var id = $(this).val();
+  $.ajax({
+            type: "POST",
+            url: "/getdept",
+             data:{year:id},
+            
+            success: function(result){
+console.log(result)
+ 
+var $el = $("#dept");
+ $el.empty()
+ $el.append($("<option></option>")
+     .attr("value", "ALL").text("ALL"));
+$.each(JSON.parse(result), function(key,value) {
+  if(value.dept!='0'&&value.dept!="")
+ { $el.append($("<option></option>")
+     .attr("value", value.dept).text(value.dept));}
+});
+
+}
+    });
+});
+  
+  
+  
+  
+  
+  
+  
+  });
+
+
+
+
+  </script>
 </html>
 <% if(locals.created){%>
     <script>swal("Assignment created","OLA!The assignment is now live",'success');</script><%}%>

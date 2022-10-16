@@ -92,12 +92,11 @@
                 </div>
                 <div class="mb-3">
                   <label for="passoutyear" class="form-label">Passout year</label>
-                  <input type="number" class="form-control" title="This can't be changed later." id="pyear" name="pyear" placeholder="Enter your passout year." />
+                 <select name="pyear" id="pyear" class="form-select form-select-lg"></select>
                 </div>
                 <div class="mb-3">
                   <label for="passoutyear" class="form-label">Branch</label>
-                  <input type="text" class="form-control" title="Type your branch" id="branch" name="branch" placeholder="Enter your branch." />
-                </div>
+<select name="branch" id="branch" class="form-select form-select-lg"></select>                </div>
                 <div class="mb-3">
                   <label for="passoutyear" class="form-label">Section</label>
                   <input type="text" class="form-control" title="Type your section" id="section" name="section" placeholder="Enter your section." />
@@ -166,4 +165,82 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
+  <script>
+    $(document).ready(function(){
+      $.ajax({
+            type: "POST",
+            url: "/getyears",
+             
+            
+            success: function(result){
+console.log(result)
+ 
+var $el = $("#pyear");
+ 
+$.each(JSON.parse(result), function(key,value) {
+  $el.append($("<option></option>")
+     .attr("value", value.year).text(value.year));
+});
+
+}
+    });
+    $.ajax({
+            type: "POST",
+            url: "/getdept",
+             data:{year:"1ST YEAR"},
+            
+            success: function(result){
+console.log(result)
+ 
+var $el = $("#branch");
+$el.empty()
+ 
+$.each(JSON.parse(result), function(key,value) {
+  if(value.dept!='0'&&value.dept!="")
+ { $el.append($("<option></option>")
+     .attr("value", value.dept).text(value.dept));}
+});
+
+
+}
+    });
+  
+    $("#pyear").change(function() {
+  if ($(this).data('options') === undefined) {
+     $(this).data('options', $('#branch option').clone());
+  }
+  var id = $(this).val();
+  $.ajax({
+            type: "POST",
+            url: "/getdept",
+             data:{year:id},
+            
+            success: function(result){
+console.log(result)
+ 
+var $el = $("#branch");
+ $el.empty()
+ 
+$.each(JSON.parse(result), function(key,value) {
+  if(value.dept!='0'&&value.dept!="")
+ { $el.append($("<option></option>")
+     .attr("value", value.dept).text(value.dept));}
+});
+
+}
+    });
+});
+  
+  
+  
+  
+  
+  
+  
+  });
+
+
+
+
+  </script>
 </html>
