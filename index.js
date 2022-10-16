@@ -462,60 +462,108 @@ console.log(id);
 
     
 })
+function sleep(ms) {
+	return new Promise((resolve) => {
+	  setTimeout(resolve, ms);
+	});
+  }
+var work=0,waiting=0;
   app.post("/updatescore",urlencodedParser,async(req,res)=>{
-	
+	res.render('viewstuassignments',{mes:true})
+	console.log("work "+work+"\nwaiting "+waiting)
+waiting++;
+
+	while(waiting>0){
+ 
+if(work==0){
+	waiting--;
+	work++;
 	var email=req.body.email.trim()
 	var id=req.body.id.trim();
 	var chef=req.cookies.chef.trim()
 	var total=req.body.total.trim()
-	res.render('viewstuassignments',{mes:true})
+	
 console.log("Start score update"+id)
 await con.query("select * from assinfo where id=?",[id],async(err,data)=>{
 	//console.log(id)
 	var codes=data[0]['codes'].split(",");
-	  updatesstatus(codes,id,email,chef,total).then((response)=>{
+	  updatesstatus(codes,email,chef).then(async(response)=>{
 		 var solved=response.solved.trim().split(",");
+		 var e=response.e.trim();
+		 console.log("Received database update request to add "+solved +" to "+e);
 		 for(var j=0;j<solved.length;j++){
 			var cccode=solved[j].trim();
-			updatedb(cccode,solved.length-1,email,id).then((res)=>{
-				console.log("Score db updated successfully,OOHOO!");
+			await updatedb(cccode,solved.length,e,id).then((res)=>{
+				console.log("Score db updated successfully,OOHOO! "+cccode+" "+e+" "+reply);
+				
+				
+
 			})
-			 
+
+			if(j==solved.length-1)
+			work--;	
+			
 		 }
 
 	  })
 
 
-})
+
+	})
 
 
 
+}
+else
+{
 
+await	sleep(50000).then((res)=>{
+		 
+	})
+
+	console.log("Work else block "+work)
+	}
+	}
 })
 async function updatedb(cccode,total,email,id){
 	return new Promise(async (resolve)=>{
+		console.log("current update code="+cccode);
+		if(cccode.length==0)
+		resolve({reply:true})
+		else{
 		await con.query("update a"+id+" set "+cccode+" =1,total="+total+" where email=?",[email],async(err,resp)=>{
 			console.log("ERR "+cccode+" for user "+email+" "+err); 
 			await con.query("update assignments set score ="+total+" where email=? and id=?",[email,id],async(err,resp)=>{
 			resolve({reply:true})
 			})
 			
-			  })
+			  })}
 	})
 }
-async function updatesstatus( codes,id,email ,chef,total){
+async function updatesstatus( codes,email ,chef){
 	return new Promise(async(resolve)=>{
 
 		console.log("Codes realtime update list "+codes);
 		
-		res="";
+		reply="";
 		for(var i=0;i<codes.length;i++){
-		await	webrun(codes,i,email,id,chef,total).then(async(res)=>{
+			console.log("Web run for "+codes[i]+ " "+chef );
+	result=	await	webrun(codes[i],chef).then(async(res)=>{
 				
-				res+=res.reply+",";
+				 
+				if(i==codes.length-1)
+				{console.log("reply ="+res.reply+"i val"+i)
+					if(res.reply!="false")
+					reply+=res.reply
+					resolve({solved:reply,e:email});}
+				else if(res.reply!="false")
+				reply+=res.reply+","
+				return reply
+				 
 			})
-			if(i==codes.length-1)
-			resolve({solved:res})
+			console.log(result)
+			
+			 
 		}
 	
 	
@@ -524,12 +572,12 @@ async function updatesstatus( codes,id,email ,chef,total){
 
 } 
 
-async function webrun(codes,i,email,id,chef,total){
+async function webrun(codes,chef){
 	return new Promise(async(resolve)=>{
 
 		const browser=await puppeteer.launch({});
 		const page =await browser.newPage();
-		var url="https://www.codechef.com/status/"+codes[i]+"?sort_by=All&sorting_order=asc&language=All&contest=All&status=FullAC&handle=+"+chef+"%2C+&Submit=GO";
+		var url="https://www.codechef.com/status/"+codes+"?sort_by=All&sorting_order=asc&language=All&contest=All&status=FullAC&handle=+"+chef+"%2C+&Submit=GO";
 		
 			console.log(url);
   await page.setDefaultNavigationTimeout(0)
@@ -541,7 +589,7 @@ async function webrun(codes,i,email,id,chef,total){
 		
 		var text=await page.evaluate(element=>element.textContent,element)
 		if(text=="(100)")
-		{ 	res+=codes[i]+",";
+		{ /*	res+=codes[i]+",";
 			var codeid=await page.evaluate(element=>element.textContent,e2)
 			console.log(codeid)
 			 
@@ -561,7 +609,7 @@ async function webrun(codes,i,email,id,chef,total){
 				
 			}); */
 			browser.close()
-			resolve({reply:codes[i]})
+			resolve({reply:codes})
 			
 		}
 	 
@@ -574,9 +622,9 @@ async function webrun(codes,i,email,id,chef,total){
 		
 		}
 		catch(hfh){
-		console.log("not done")
+		console.log("not done "+hfh)
 		browser.close()
-		resolve({reply:false})
+		resolve({reply:"false"})
 		}
 	})
 }
