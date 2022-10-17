@@ -122,9 +122,137 @@
           <!-- Content wrapper -->
           <div class="content-wrapper">
             <!-- Content -->
-    
+    <div class="row" style="margin:10px;">
+      <div class="col-4">
+        <div class="card"  >
+          <div class="card-body">
+            <h5 class="card-title">Total Assignments Created</h5>
+            
+            <p id="total_assignments"  align-content="center" style="font-size: 100px;text-align: center;font-weight: bolder;color: black;">0</p>
+     <div class="card-footer" style="text-align: center;">
+      <a href="reports" ><button class="btn btn-primary" >View Assignments</button></a>
+     </div>
+     
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="card" >
+          <div class="card-body">
+            <h5 class="card-title">Number of students registered</h5>
+            
+            <p id="stu_reg"  align-content="center" style="font-size: 100px;text-align: center;font-weight: bolder;color: black;">0</p>
+     <div class="card-footer" style="text-align: center;">
+      <br>
+      <br>
+     </div>
+      </div>
+    </div>
          
             </div>
+
+            <div class="col-4">
+              <div class="card" >
+                <div class="card-body">
+                  <h5 class="card-title">Number of admins</h5>
+                  
+                  <p id="admincnt"  align-content="center" style="font-size: 100px;text-align: center;font-weight: bolder;color: black;">0</p>
+           <div class="card-footer" style="text-align: center;">
+            <br>
+            <br>
+           </div>
+            </div>
+          </div>
+               
+                  </div>
+
+            </div>
+      
+            
+            <div class="row" style="margin:50px;">
+              <div class="col-6">
+                <div class="card">
+                  <div class="row row-bordered g-0">
+                    <div class="col-md-8">
+              
+                      <h5 class="card-header m-0 me-2 pb-3">Departments year wise</h5>
+                      
+                     
+                        
+                </div>
+                <div class="card-body">
+                <div class="row row-bordered g-0">
+                  <div class="col" style="margin:5px;">
+                    <canvas id="dept" style="width:100%;max-width:600px"></canvas>
+                  </div>
+                </div>
+                
+                </div></div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="card">
+                  <div class="row row-bordered g-0">
+                    <div class="col-md-8">
+              
+                      <h5 class="card-header ">Registered students year wise</h5>
+                      
+                     
+                        
+                </div>
+                <div class="card-body">
+                <div class="row row-bordered g-0">
+                  <div class="col" style="margin:5px;">
+                    <canvas id="stu" style="width:100%;max-width:600px"></canvas>
+                  </div>
+                </div>
+                
+                </div></div>
+                </div>
+              </div>
+              </div>
+              <div class="row" style="margin:50px;">
+                <div class="col-6">
+                  <div class="card">
+                    <div class="row row-bordered g-0">
+                      <div class="col-md-8">
+                
+                        <h5 class="card-header m-0 me-2 pb-3">Departments wise registered students </h5>
+                        
+                       
+                          
+                  </div>
+                  <div class="card-body">
+                  <div class="row row-bordered g-0">
+                    <div class="col" style="margin:5px;">
+                      <canvas id="deptstu" style="width:100%;max-width:600px"></canvas>
+                    </div>
+                  </div>
+                  
+                  </div></div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="card">
+                    <div class="row row-bordered g-0">
+                      <div class="col-md-8">
+                
+                        <h5 class="card-header ">Number of problems solved</h5>
+                        
+                       
+                          
+                  </div>
+                  <div class="card-body">
+                  <div class="row row-bordered g-0">
+                    <div class="col" style="margin:5px;">
+                      <canvas id="yearscore" style="width:100%;max-width:600px"></canvas>
+                    </div>
+                  </div>
+                  
+                  </div></div>
+                  </div>
+                </div>
+                </div>
             <!-- / Content -->
 
             <!-- Footer -->
@@ -177,5 +305,242 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+ function counter(id, start, end, duration) {
+  let obj = document.getElementById(id),
+   current = start,
+   range = end - start,
+   increment = end > start ? 1 : -1,
+   step = Math.abs(Math.floor(duration / range)),
+   timer = setInterval(() => {
+    current += increment;
+    obj.textContent = current;
+    if (current == end) {
+     clearInterval(timer);
+    }
+   }, step);
+ }
+ counter("admincnt", 0, <%=admincnt%>, 2000);
+ counter("stu_reg", 0, <%=stu_reg%>, 2000);
+ counter("total_assignments", 0, <%=total_assignments%>, 2000);
+
+});
+
+
+    </script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+       <script>
+        function getRandomColorHex() {
+    var hex = "0123456789ABCDEF",
+        color = "#";
+    for (var i = 1; i <= 6; i++) {
+      color += hex[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+     var yeararr=[];
+
+        var xValues = <%-JSON.stringify(x3.years3)%>;
+        
+      
+        var yValues = [ <%=y3%>];
+        var barColors = [];
+        for(var i=0;i<<%-x3.years3.length%>;i++)
+        barColors[i]=getRandomColorHex();
+
+            
+        
+        new Chart("yearscore", {
+          type: "bar",
+          data: {
+            labels: xValues,
+            datasets: [{
+              backgroundColor:barColors,
+              data: yValues
+            }]
+          },
+          options: {
+            legend: {display: false},
+            title: {
+              display: true,
+              text: "Number of problems solved"
+            },
+            scales: {
+    yAxes: [{
+      scaleLabel: {
+        display: true,
+        labelString: 'Number of problems solved'
+      }
+    }],
+    xAxes: [{
+      scaleLabel: {
+        display: true,
+        labelString: 'Year'
+      }
+    }]
+  }     
+          }
+        });
+        </script>
+       <script>
+        function getRandomColorHex() {
+    var hex = "0123456789ABCDEF",
+        color = "#";
+    for (var i = 1; i <= 6; i++) {
+      color += hex[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+     var yeararr=[];
+
+        var xValues = <%-JSON.stringify(x2.years2)%>;
+        
+      
+        var yValues = [ <%=y2%>];
+        var barColors = [];
+        for(var i=0;i<<%-x2.years2.length%>;i++)
+        barColors[i]=getRandomColorHex();
+
+            
+        
+        new Chart("deptstu", {
+          type: "bar",
+          data: {
+            labels: xValues,
+            datasets: [{
+              backgroundColor:barColors,
+              data: yValues
+            }]
+          },
+          options: {
+            legend: {display: false},
+            title: {
+              display: true,
+              text: "Department wise student count"
+            },
+            scales: {
+    yAxes: [{
+      scaleLabel: {
+        display: true,
+        labelString: 'Number of students'
+      }
+    }],
+    xAxes: [{
+      scaleLabel: {
+        display: true,
+        labelString: 'Departments'
+      }
+    }]
+  }     
+          }
+        });
+        </script>
+      <script>
+        function getRandomColorHex() {
+    var hex = "0123456789ABCDEF",
+        color = "#";
+    for (var i = 1; i <= 6; i++) {
+      color += hex[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+     var yeararr=[];
+
+        var xValues = <%-JSON.stringify(x.years)%>;
+        
+      
+        var yValues = [ <%=y%>];
+        var barColors = [];
+        for(var i=0;i<<%-x.years.length%>;i++)
+        barColors[i]=getRandomColorHex();
+
+            
+        
+        new Chart("dept", {
+          type: "bar",
+          data: {
+            labels: xValues,
+            datasets: [{
+              backgroundColor:barColors,
+              data: yValues
+            }]
+          },
+          options: {
+            legend: {display: false},
+            title: {
+              display: true,
+              text: "Year wise departments"
+            },
+            scales: {
+    yAxes: [{
+      scaleLabel: {
+        display: true,
+        labelString: 'Number of departments'
+      }
+    }],
+    xAxes: [{
+      scaleLabel: {
+        display: true,
+        labelString: 'Academic years'
+      }
+    }]
+  }     
+          }
+        });
+        </script>
+           <script>
+            function getRandomColorHex() {
+        var hex = "0123456789ABCDEF",
+            color = "#";
+        for (var i = 1; i <= 6; i++) {
+          color += hex[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+         var yeararr=[];
+    
+            var xValues = <%-JSON.stringify(x1.years1)%>;
+            
+          
+            var yValues = [ <%=y1%>];
+            var barColors = [];
+            for(var i=0;i<(<%- x1.years1.length%>);i++)
+            barColors[i]=getRandomColorHex();
+    
+                
+            
+            new Chart("stu", {
+              type: "bar",
+              data: {
+                labels: xValues,
+                datasets: [{
+                  backgroundColor:barColors,
+                  data: yValues
+                }]
+              },
+              options: {
+                legend: {display: false},
+                title: {
+                  display: true,
+                  text: "Year wise student registrations"
+                },
+                scales: {
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Number of students'
+          }
+        }],
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Academic years'
+          }
+        }]
+      }     
+              }
+            });
+            </script>
   </body>
 </html>

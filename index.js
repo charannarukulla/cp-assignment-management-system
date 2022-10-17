@@ -266,9 +266,72 @@ app.get('/dashboard',(re,res)=>{
 	res.render('dashboard')
 	res.end()
 })
-app.get('/admindashboard',(re,res)=>{
-	res.render('admindashboard');
-	res.end()
+app.get('/admindashboard',async(re,res)=>{
+var total_assignments;
+var stu_reg;
+var admincnt;
+	await con.query("select count(id) as cnt from assinfo",async(err,result)=>{
+		total_assignments=result[0].cnt;
+	await	con.query("select count(*) as cnt from studentinfo",async(err,result1)=>{
+			stu_reg=result1[0].cnt;
+	await 	 con.query("select count(*) as cnt from login where role=?",["admin"],async(err,result2)=>{
+admincnt=result2[0].cnt;
+
+await con.query("SELECT year,count(dept)-1 as d FROM cpdb.years group by year",async(err,result3)=>{
+	var years=[];
+	var deptcnt=[];
+	for(var i=0;i<result3.length;i++){
+		years[i]=result3[i].year;
+
+		deptcnt[i]=result3[i].d;
+
+	}
+	
+	console.log(years)
+	 await con.query("SELECT passout,count(passout)as ct FROM cpdb.studentinfo group by passout;",async(err,result4)=>{
+		var years1=[]
+		var stucnt=[]
+		for(var i=0;i<result4.length;i++){
+			years1[i]=result4[i].passout;
+	
+			stucnt[i]=result4[i].ct;
+	
+		}
+		await con.query("SELECT branch,count(branch)as ct FROM cpdb.studentinfo group by branch;",async(err,result5)=>{
+			var years2=[]
+			var stucnt1=[]
+			for(var i=0;i<result5.length;i++){
+				years2[i]=result5[i].branch;
+		
+				stucnt1[i]=result5[i].ct;   
+		
+			}
+			await con.query("select sum(score) as s,passout from assignments inner join studentinfo on studentinfo.email=assignments.email group by studentinfo.passout;",async(err,result6)=>{
+				var years3=[]
+				var score=[]
+				for(var i=0;i<result6.length;i++){
+					years3[i]=result6[i].passout;
+			
+					score[i]=result6[i].s;   
+			
+				}
+				res.render('admindashboard',{total_assignments,stu_reg,admincnt,x:({years}),y:deptcnt,x1:({years1}),y1:stucnt,x2:({years2}),y2:stucnt1,x3:({years3}),y3:score});
+		
+			})
+		})
+		
+	 })
+
+})
+
+		 })
+		
+		})
+		
+	})
+
+
+ 
 })
 app.get('/viewstuassignments',async(req,res)=>{
 var ids=[];
