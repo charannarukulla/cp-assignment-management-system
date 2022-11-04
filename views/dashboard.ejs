@@ -112,7 +112,52 @@
           <!-- Content wrapper -->
           <div class="content-wrapper">
             <!-- Content -->
-    
+            <div class="row" style="margin:10px;">
+              <div class="col-4">
+                <div class="card"  >
+                  <div class="card-body">
+                    <h5 class="card-title">Total Assignments assignmed</h5>
+                    
+                    <p id="total_assignments"  align-content="center" style="font-size: 100px;text-align: center;font-weight: bolder;color: black;">0</p>
+             <div class="card-footer" style="text-align: center;">
+              <a href="viewstuassignments" ><button class="btn btn-primary" >View Assignments</button></a>
+             </div>
+             
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="card" >
+                  <div class="card-body">
+                    <h5 class="card-title">Total assignments attempted</h5>
+                    
+                    <p id="att"  align-content="center" style="font-size: 100px;text-align: center;font-weight: bolder;color: black;">0</p>
+             <div class="card-footer" style="text-align: center;">
+              <br>
+              <br>
+             </div>
+              </div>
+            </div>
+                 
+                    </div>
+        
+                    <div class="col-4">
+                      <div class="card" >
+                        <div class="card-body">
+                          <h5 class="card-title">Number of problems solved</h5>
+                          
+                          <p id="ps"  align-content="center" style="font-size: 100px;text-align: center;font-weight: bolder;color: black;">0</p>
+                   <div class="card-footer" style="text-align: center;">
+                    <br>
+                    <br>
+                   </div>
+                    </div>
+                  </div>
+                       
+                          </div>
+        
+                    </div>
+              
          
             </div>
             <!-- / Content -->
@@ -168,4 +213,27 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
+  <script>
+
+document.addEventListener("DOMContentLoaded", () => {
+ function counter(id, start, end, duration) {
+  let obj = document.getElementById(id),
+   current = start,
+   range = end - start,
+   increment = end > start ? 1 : -1,
+   step = Math.abs(Math.floor(duration / range)),
+   timer = setInterval(() => {
+    current += increment;
+    obj.textContent = current;
+    if (current == end) {
+     clearInterval(timer);
+    }
+   }, step);
+  
+ }
+ counter("total_assignments", 0, <%=total_assignments%>, 2000);
+ counter("att", 0, <%=att%>, 2000);
+ counter("ps", 0, <%=ps%>, 1000);
+});
+  </script>
 </html>

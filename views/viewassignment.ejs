@@ -150,9 +150,9 @@
               <a href="<%=url%>" target="_blank"><button  class="btn btn-danger" >Solve now</button> </a>
                 <%  }  else{ 
                   
-                  var url="/codes/"+curcode+"/"+email.split("@")[0]+".txt";
+                  var url="https://www.codechef.com/problems/"+curcode;
                   %>
-                <a href="<%=url%>" target="_blank">  <button   class="btn btn-info">View my code</button></a><%}%>
+                <a href="<%=url%>" target="_blank">  <button   class="btn btn-info">Solve again</button></a><%}%>
 
               </td>
             </tr>
@@ -165,7 +165,12 @@
                 <input type="hidden" name="total"  value=" <%=total%> "  />
                 
                 <input type="hidden" name="email"  value=" <%=email%> "  /><input type="hidden" name="id"  value=" <%=id%> "  />
-                <button type="submit" class="btn btn-success">Update score</button><br></form>
+             <%if(locals.e==true){%>
+              <p style="color: red;">You can't update score as time has expired</p>
+              <%}else{%>
+                <button type="submit" class="btn btn-success">Update score</button>
+                <%}%>
+                <br></form>
             </td>
           </tr>
              

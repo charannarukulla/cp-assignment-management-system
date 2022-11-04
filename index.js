@@ -71,12 +71,12 @@ await con. query("select   year,count(year)as dpcount from years group by year",
 const mysql = require('mysql')
 const con  = mysql.createConnection({
     connectionLimit : 100,
-    host            : 'cpdb1.cjlyu7lpn9hv.ap-south-1.rds.amazonaws.com',
+    host            :'localhost' ,//'cpdb1.cjlyu7lpn9hv.ap-south-1.rds.amazonaws.com',
 	port:3306,
     user            : 'root',
-    password        : 'sDFPjqEsvWnhSqGg3Ch5',
+    password        :'',// 'sDFPjqEsvWnhSqGg3Ch5',
     database        : 'cpdb'
-})  
+})   
 con.connect(function(err) { 
 	if (err) throw err;
 	console.log("Connected!"); 
@@ -262,9 +262,18 @@ console.log("User added")
 
 
 })
-app.get('/dashboard',(re,res)=>{
-	res.render('dashboard')
-	res.end()
+app.get('/dashboard',(req,res)=>{
+	var email=req.cookies.emailid.trim();
+	con.query("SELECT count(*) as cnt from assignments where email=?;",[email],(err,r1)=>{
+		con.query("select count(*) as cnt from assignments where email=? and score>0",[email],(err,r2)=>{
+ con.query("select sum(score) as ps from assignments where email=?",[email],(err,r3)=>{
+	res.render('dashboard',{total_assignments:r1[0].cnt,att:r2[0].cnt,ps:r3[0].ps})
+ })
+		})
+	})
+	
+	
+	 
 })
 app.get('/admindashboard',async(re,res)=>{
 var total_assignments;
@@ -468,7 +477,9 @@ b.render('newassignment',{created:true,aid:Date.now()})
 })
  
 
-app.listen(process.env.PORT||4000);
+var s=app.listen(process.env.PORT||4000);
+s.keepAliveTimeout=30000
+s.headersTimeout=40000
 
 
 
@@ -477,7 +488,11 @@ app.post("/viewassignment",urlencodedParser,(req,res)=>{
 var id=req.body.id;
 id=id.trim();
 con.query("select * from assinfo where id=?",[id],async(err,data)=>{
-	
+	var expired=false;
+	con.query("select * from assinfo where id=? and start<now() and now()<end",[id],(err,ds)=>{
+     if(ds.length==0)
+	 expired=true;
+	})
 var start=data[0].start;
 var end=data[0].end;
 var codes=data[0].codes.split(",");
@@ -494,7 +509,7 @@ con.query("select * from a"+id+" where email=?",[req.cookies.emailid],(err,score
 	for(var k=0;k<scores.length-2;k++)
 	curscores=scores[0].codes[k]
 	console.log("curscores "+curscores)
-	res.render("viewassignment",{email:req.cookies.emailid,id:id,a:codes,b:curscores,total:scores[0]['total']}); })
+	res.render("viewassignment",{e:expired,email:req.cookies.emailid,id:id,a:codes,b:curscores,total:scores[0]['total']}) })
 
 	})
  }
@@ -509,7 +524,7 @@ con.query("select * from a"+id+" where email=?",[req.cookies.emailid],(err,score
 		curscores[k]=scores1[0][cc];
 		console.log(curscores)
 	 }
-	res.render("viewassignment",{email:req.cookies.emailid,id:id,a:codes,b:curscores,total:scores1[0]['total']}); 
+	res.render("viewassignment",{e:expired,email:req.cookies.emailid,id:id,a:codes,b:curscores,total:scores1[0]['total']}); 
  }
 
   
@@ -744,11 +759,89 @@ app.post("/leaderboard",urlencodedParser,(req,res)=>{
 	res.render("leaderboard",{a:result});
 	})
 })
-app.post("/viewanalysis",urlencodedParser,(req,res)=>{
+app.post("/viewanalysis",urlencodedParser,async(req,res)=>{
 var id=req.body.id.trim();
-var yearsarr={a:["2025","2024","2023","2022"]};
- 
-res.render("analysis",{id,arryear:yearsarr,arrdata:["10","20","30","40"]})
+await con.query("SELECT count(*) as cnt,studentinfo.passout as year from assignments,studentinfo where assignments.email=studentinfo.email and assignments.id=? group by studentinfo.passout;",[id],async(err,r1)=>{
+
+	var years=[];
+	var cnt=[];
+	for(var i=0;i<r1.length;i++){
+		years[i]=r1[i].year;
+
+		cnt[i]=r1[i].cnt;
+
+	}
+await con.query("SELECT count(*) as cnt,studentinfo.passout as year from assignments,studentinfo where assignments.email=studentinfo.email and assignments.id=? and assignments.score>0 group by studentinfo.passout;",[id],async(err,r2)=>{
+	var years1=[];
+	var cnt1=[];
+	for(var i=0;i<r2.length;i++){
+		years1[i]=r2[i].year;
+
+		cnt1[i]=r2[i].cnt;
+
+	}
+	await con.query("SELECT count(*) as cnt,studentinfo.branch as year from assignments,studentinfo where assignments.email=studentinfo.email and assignments.id=? and assignments.score>0 group by studentinfo.branch;",[id],async(err,r3)=>{
+		var years2=[];
+		var cnt2=[];
+		for(var i=0;i<r3.length;i++){
+			years2[i]=r3[i].year;
+	
+			cnt2[i]=r3[i].cnt;
+	
+		}
+		await con.query("SELECT count(*) as cnt,studentinfo.branch as year from assignments,studentinfo where assignments.email=studentinfo.email and assignments.id=?  group by studentinfo.branch;",[id],async(err,r4)=>{
+			var years4=[];
+			var cnt4=[];
+			for(var i=0;i<r4.length;i++){
+				years4[i]=r4[i].year;
+		
+				cnt4[i]=r4[i].cnt;
+		
+			}
+	res.render('analysis',{x:({years}),y:cnt,x1:{years1},y1:cnt1,x2:{years2},y2:cnt2,x4:{years4},y4:cnt4}); 
+})
+	})
+	
+ })
+
+}) 
+})
+app.post("/updateinfo",urlencodedParser,(req,res)=>{
+	var name=req.body.name.trim();
+	var chef=req.body.ccuser.trim();
+	var yop=req.body.pyear.trim();
+	
+	var section=req.body.section.trim();
+	var email=req.cookies.emailid;
+	
+		con.query("update studentinfo set fullname=?,codechefusername=?,section=?,passout=? where email=?",[name,chef,section,yop,email],(err,r)=>{
+			 
+			if(pass==""){
+				con.query("select * from studentinfo where email=?",[email],(err,result)=>{
+					console.log(result)
+					res.render("accountmanage",{a:result[0]});
+				})	
+			}
+			else{
+				var pass=req.body.password.trim();
+				con.query("update login set password=? where email=?",[pass,email],(err,r1)=>{
+					con.query("select * from studentinfo where email=?",[email],(err,result)=>{
+						console.log(result)
+						res.render("accountmanage",{a:result[0]});
+					})
+				})
+			}
+		})
+	 
+})
+app.get("/myacc",(req,res)=>{
+	var email=req.cookies.emailid;
+	console.log(email)
+	con.query("select * from studentinfo where email=?",[email],(err,result)=>{
+		console.log(result)
+		res.render("accountmanage",{a:result[0]});
+	})
+
 
 })
 app.post("/adddept",urlencodedParser,(req,res)=>{

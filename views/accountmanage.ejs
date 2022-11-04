@@ -16,7 +16,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Register as student</title>
+    <title>Modify account</title>
 
     <meta name="description" content="" />
 
@@ -54,6 +54,58 @@
   </head>
 
   <body>
+     <!-- Layout wrapper -->
+     <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+          <!-- Menu -->
+    <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+        <div class="app-brand" style="margin-top: 40px;">
+          <a href="index" class="app-brand-link gap-2">
+             
+           <img src="./cpmlogo.png"  />
+          </a>  
+          <span class="app-brand-text demo text-body fw-bolder"  > CPAM</span>
+        </div>
+
+        <div class="menu-inner-shadow"></div>
+
+        <ul class="menu-inner py-1">
+          <!-- Dashboard -->
+          <li class="menu-item">
+            <a href="dashboard" class="menu-link">
+              <i class="menu-icon tf-icons bx bx-home-circle"></i>
+              <div data-i18n="Analytics">Dashboard</div>
+            </a>
+          </li>
+         
+          <li class="menu-item">
+            <a href="viewstuassignments" class="menu-link">
+              <i class='bx bx-show'></i>
+              <div data-i18n="Analytics">View assignments</div>
+            </a>
+          </li>
+         
+           
+          <li class="menu-item">
+            <a href="myacc" class="menu-link">
+              <i class='bx bxs-user-account'></i>
+              <div data-i18n="Analytics">My account</div>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="logout" class="menu-link">
+              <i class='bx bx-log-out-circle'></i>
+              <div data-i18n="Analytics">Logout</div>
+            </a>
+          </li>
+
+        
+
+      
+         
+           
+        </ul>
+      </aside>
     <!-- Content -->
 
     <div class="container-xxl">
@@ -63,46 +115,60 @@
           <div class="card">
             <div class="card-body">
               <!-- Logo -->
-              <div class="app-brand justify-content-center">
-                <a href="index" class="app-brand-link gap-2">
-                   
-                 <img src="./cpmlogo.png"  />
-                </a> 
-                <span class="app-brand-text demo text-body fw-bolder"  >CPAM</span>
-              </div>
+             
               <!-- /Logo -->
-              <h4 class="mb-2">Welcome to CP Assignments portal! 👋</h4>
-              <p class="mb-4">Please enter your basic details.  </p>
+              <h4 class="mb-2">Manage account</h4>
+            
 
-              <form id="formAuthentication" class="mb-3" action="addstudent" method="POST">
+              <form id="formAuthentication" class="mb-3" action="updateinfo" method="POST">
                 <div class="mb-3">
                   <label for="username" class="form-label">Full name </label>
                   <input
                     type="text"
                     class="form-control"
                     id="username"
+                    value="<%=a.fullname%>"
                     name="name"
                     placeholder="Enter your Full name"
                     autofocus
                   />
                 </div>
                 <div class="mb-3">
+                    <label for="username" class="form-label">Roll number</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                     
+                      value="<%=a.rollnumber%>"
+                      
+                     
+                      autofocus readonly
+                    />
+                  </div>
+                <div class="mb-3">
                   <label for="codechefusername" class="form-label">Codechef username</label>
-                  <input type="text" class="form-control" title="Copy and paste exact username" id="ccuser" name="ccuser" placeholder="Enter your exact codechef username." />
+                  <input type="text" value="<%=a.codechefusername%>" class="form-control" title="Copy and paste exact username." id="ccuser" name="ccuser" placeholder="Enter your exact codechef username." />
                 </div>
                 <div class="mb-3">
                   <label for="passoutyear" class="form-label">Year</label>
-                 <select name="pyear" id="pyear" class="form-select form-select-lg"></select>
+                  
+                 <select name="pyear" id="pyear" class="form-select form-select-lg"  >
+                    
+                 </select>
+                 <input type="text" id="ip" class="form-control" name="pyear" value="<%=a.passout%>" readonly>
+                <a href="#" id="ipc">CHANGE</a>
                 </div>
-                <div class="mb-3">
+                 <div class="mb-3">
                   <label for="passoutyear" class="form-label">Branch</label>
-<select name="branch" id="branch" class="form-select form-select-lg"></select>                </div>
+<!--<select name="branch" id="branch" class="form-select form-select-lg" ></select>    --> 
+<input type="text" class="form-control" name="branch" value="<%=a.branch%>" readonly>
+           </div>
                 <div class="mb-3">
                   <label for="passoutyear" class="form-label">Section</label>
-                  <input type="text" class="form-control" title="Type your section" id="section" name="section" placeholder="Enter your section." />
+                  <input type="text" class="form-control" name="section"  id="section" value="<%=a.section%>" />
                 </div>
                 <div class="mb-3 form-password-toggle">
-                  <label class="form-label" for="password">Password</label>
+                  <label class="form-label" for="password">New password(Type only if you want to change)</label>
                   <div class="input-group input-group-merge">
                     <input
                       type="password"
@@ -116,24 +182,12 @@
                   </div>
                 </div>
 
-                <div class="mb-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" />
-                    <label class="form-check-label" for="terms-conditions">
-                      I agree to
-                      <a href="javascript:void(0);">privacy policy & terms</a>
-                    </label>
-                  </div>
-                </div>
-                <button class="btn btn-primary d-grid w-100">Sign up</button>
+                 
+           
+                <button class="btn btn-primary d-grid w-100">Update</button>
               </form>
 
-              <p class="text-center">
-                <span>Already have an account?</span>
-                <a href="/logout">
-                  <span>Sign in instead</span>
-                </a>
-              </p>
+              
             </div>
           </div>
           <!-- Register Card -->
@@ -167,6 +221,15 @@
   </body>
   <script>
     $(document).ready(function(){
+        $("#pyear").removeAttr("name");
+        $("#pyear").hide()
+        $("#ipc").click(function (){
+
+            $("#ipc").remove();
+            $("#ip").remove();
+            $("#pyear").attr("name","pyear");
+            $("#pyear").show()
+        });
       $.ajax({
             type: "POST",
             url: "/getyears",

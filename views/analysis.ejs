@@ -115,12 +115,7 @@
                 <div data-i18n="Analytics">Manage</div>
               </a>
             </li>
-            <li class="menu-item">
-              <a href="myacc" class="menu-link">
-                <i class='bx bxs-user-account'></i>
-                <div data-i18n="Analytics">My account</div>
-              </a>
-            </li>
+          
             <li class="menu-item">
               <a href="logout" class="menu-link">
                 <i class='bx bx-log-out-circle'></i>
@@ -149,7 +144,7 @@
     <div class="row row-bordered g-0">
       <div class="col-md-8">
 
-        <h5 class="card-header m-0 me-2 pb-3">Passout year wise participation</h5>
+        <h5 class="card-header m-0 me-2 pb-3">Year wise invitations</h5>
         
        
           
@@ -167,6 +162,80 @@
     </div>
          
             </div>
+          
+            <div class="col-6">
+              <div class="card">
+                <div class="row row-bordered g-0">
+                  <div class="col-md-8">
+            
+                    <h5 class="card-header m-0 me-2 pb-3">Year wise participants</h5>
+                    
+                   
+                      
+              </div>
+              <div class="card-body">
+              <div class="row row-bordered g-0">
+                <div class="col" style="margin:5px;">
+                  <canvas id="c1" style="width:100%;max-width:600px"></canvas>
+                </div>
+              </div>
+              
+              </div>
+            </div>
+            
+                </div>
+                     
+                        </div>
+                     
+                        <div class="row" style="margin-top: 30px;">
+                          <div class="col-6">
+                            <div class="card">
+                              <div class="row row-bordered g-0">
+                                <div class="col-md-8">
+                          
+                                  <h5 class="card-header m-0 me-2 pb-3">Department wise participants</h5>
+                                  
+                                 
+                                    
+                            </div>
+                            <div class="card-body">
+                            <div class="row row-bordered g-0">
+                              <div class="col" style="margin:5px;">
+                                <canvas id="c2" style="width:100%;max-width:600px"></canvas>
+                              </div>
+                            </div>
+                            
+                            </div>
+                          </div>
+                          
+                              </div>
+                                   
+                                      </div>
+                                      <div class="col-6">
+                                        <div class="card">
+                                          <div class="row row-bordered g-0">
+                                            <div class="col-md-8">
+                                      
+                                              <h5 class="card-header m-0 me-2 pb-3">Department wise invitations</h5>
+                                              
+                                             
+                                                
+                                        </div>
+                                        <div class="card-body">
+                                        <div class="row row-bordered g-0">
+                                          <div class="col" style="margin:5px;">
+                                            <canvas id="c4" style="width:100%;max-width:600px"></canvas>
+                                          </div>
+                                        </div>
+                                        
+                                        </div>
+                                      </div>
+                                      
+                                          </div>
+                                               
+                                                  </div>
+                        </div>
+          </div>
             <!-- / Content -->
 
             <!-- Footer -->
@@ -217,10 +286,25 @@
 
     <!-- Page JS -->
     <script>
- 
-      var xValues = [(<%=locals.x%>)];
-      var yValues = [ <%=arrdata%>];
-      var barColors = ["red", "green","blue","orange"];
+ function getRandomColorHex() {
+    var hex = "0123456789ABCDEF",
+        color = "#";
+    for (var i = 1; i <= 6; i++) {
+      color += hex[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+ var yeararr=[];
+
+var xValues = <%-JSON.stringify(x.years)%>;
+
+
+var yValues = [ <%=y%>];
+var barColors = [];
+for(var i=0;i<<%-x.years.length%>;i++)
+barColors[i]=getRandomColorHex();
+
+    
       
       new Chart("year", {
         type: "bar",
@@ -232,15 +316,175 @@
           }]
         },
         options: {
-          legend: {display: false},
-          title: {
-            display: true,
-            text: "Passout year wise invitations"
-          }
-        }
-      });
+            legend: {display: false},
+            title: {
+              display: true,
+              text: "Year wise invited"
+            },
+            scales: {
+    yAxes: [{
+      scaleLabel: {
+        display: true,
+        labelString: 'Number of students'
+      }
+    }],
+    xAxes: [{
+      scaleLabel: {
+        display: true,
+        labelString: 'Year'
+      }}]}}
+    });
       </script>
-
+         <script>
+          function getRandomColorHex() {
+             var hex = "0123456789ABCDEF",
+                 color = "#";
+             for (var i = 1; i <= 6; i++) {
+               color += hex[Math.floor(Math.random() * 16)];
+             }
+             return color;
+           }
+          var yeararr=[];
+         
+         var xValues = <%-JSON.stringify(x4.years4)%>;
+         
+         
+         var yValues = [ <%=y4%>];
+         var barColors = [];
+         for(var i=0;i<<%-x4.years4.length%>;i++)
+         barColors[i]=getRandomColorHex();
+         
+             
+               
+               new Chart("c4", {
+                 type: "bar",
+                 data: {
+                   labels: xValues,
+                   datasets: [{
+                     backgroundColor: barColors,
+                     data: yValues
+                   }]
+                 },
+                 options: {
+                     legend: {display: false},
+                     title: {
+                       display: true,
+                       text: "Department wise invited"
+                     },
+                     scales: {
+             yAxes: [{
+               scaleLabel: {
+                 display: true,
+                 labelString: 'Number of students'
+               }
+             }],
+             xAxes: [{
+               scaleLabel: {
+                 display: true,
+                 labelString: 'Department'
+               }}]}}
+             });
+               </script>
+          <script>
+            function getRandomColorHex() {
+               var hex = "0123456789ABCDEF",
+                   color = "#";
+               for (var i = 1; i <= 6; i++) {
+                 color += hex[Math.floor(Math.random() * 16)];
+               }
+               return color;
+             }
+            var yeararr=[];
+           
+           var xValues = <%-JSON.stringify(x1.years1)%>;
+           
+           
+           var yValues = [ <%=y1%>];
+           var barColors = [];
+           for(var i=0;i<<%-x1.years1.length%>;i++)
+           barColors[i]=getRandomColorHex();
+           
+               
+                 
+                 new Chart("c1", {
+                   type: "bar",
+                   data: {
+                     labels: xValues,
+                     datasets: [{
+                       backgroundColor: barColors,
+                       data: yValues
+                     }]
+                   },
+                   options: {
+            legend: {display: false},
+            title: {
+              display: true,
+              text: "Year wise participants"
+            },
+            scales: {
+    yAxes: [{
+      scaleLabel: {
+        display: true,
+        labelString: 'Number of students'
+      }
+    }],
+    xAxes: [{
+      scaleLabel: {
+        display: true,
+        labelString: 'Year'
+      }}]}}
+                 });
+                 </script>
+<script>
+  function getRandomColorHex() {
+     var hex = "0123456789ABCDEF",
+         color = "#";
+     for (var i = 1; i <= 6; i++) {
+       color += hex[Math.floor(Math.random() * 16)];
+     }
+     return color;
+   }
+  var yeararr=[];
+ 
+ var xValues = <%-JSON.stringify(x2.years2)%>;
+ 
+ 
+ var yValues = [ <%=y2%>];
+ var barColors = [];
+ for(var i=0;i<<%-x2.years2.length%>;i++)
+ barColors[i]=getRandomColorHex();
+ 
+     
+       
+       new Chart("c2", {
+         type: "bar",
+         data: {
+           labels: xValues,
+           datasets: [{
+             backgroundColor: barColors,
+             data: yValues
+           }]
+         },
+         options: {
+  legend: {display: false},
+  title: {
+    display: true,
+    text: "Department wise participants"
+  },
+  scales: {
+yAxes: [{
+scaleLabel: {
+display: true,
+labelString: 'Number of students'
+}
+}],
+xAxes: [{
+scaleLabel: {
+display: true,
+labelString: 'Department'
+}}]}}
+       });
+       </script>
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
